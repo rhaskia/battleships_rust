@@ -31,11 +31,18 @@ fn App() -> Html
             log!("Hello", JsValue::from(pos.0), JsValue::from(pos.1))
         })
     };
+    
+    let ship_control = {
+        Callback::from(move |e: KeyboardEvent| {
+            log!("Hello", (e.key_code() as u8 as char).to_string())
+        })
+    };
 
     html! 
     {
         <>
-        <BoardGUI hover={ship_hover} click={ship_place} active={ship_active.clone()}/>
+        <BoardGUI hover={ship_hover} click={ship_place} 
+        active={ship_active.clone()} keydown={ship_control}/>
         <CurrentShipGUI position={ship_pos.clone()}
          active={ship_active.clone()} {length}/>
         </>

@@ -1,4 +1,5 @@
 use yew::prelude::*;
+use yew::virtual_dom::ListenerKind::onkeydown;
 
 pub type Vector2 = (u32, u32);
 
@@ -6,7 +7,8 @@ pub type Vector2 = (u32, u32);
 pub struct BoardProps {
     pub active: UseStateHandle<bool>,
     pub hover: Callback<Vector2>,
-    pub click: Callback<Vector2>
+    pub click: Callback<Vector2>,
+    pub keydown: Callback<KeyboardEvent>
 }
 
 #[function_component]
@@ -14,6 +16,21 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
     let cb = {
         let active = props.active.clone();
         Callback::from(move |_| active.set(false))
+    };
+
+    let hover = |x: u32, y: u32| {
+        let ship_hover = props.hover.clone();
+        Callback::from(move |_| ship_hover.emit((x, y)))
+    };
+
+    let click = |x: u32, y: u32| {
+        let ship_click = props.click.clone();
+        Callback::from(move |_| ship_click.emit((x, y)))
+    };
+
+    let keydown = {
+        let ship_key = props.keydown.clone();
+        Callback::from(move |e: KeyboardEvent| ship_key.emit(e))
     };
 
     html! {
@@ -34,17 +51,10 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
                 {(0..10).map(|x| 
                 html! {
                 <button class="gridbutton" 
-                onmouseover = {
-                    let ship_hover = props.hover.clone();
-                    Callback::from(
-                        move |_| ship_hover.emit((x, y)))
-                }
-                onmousedown = {
-                    let ship_click = props.click.clone();
-                    Callback::from(
-                        move |_| ship_click.emit((x, y)))
-                }
-                onmouseleave={cb.clone()}>
+                onmouseover = {hover(x, y)}
+                onmousedown = {click(x, y)}
+                onmouseleave={cb.clone()}
+                onkeydown={keydown.clone()}>
                 </button>
                 }).collect::<Html>()}
             </div>
