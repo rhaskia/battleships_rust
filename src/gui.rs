@@ -5,7 +5,8 @@ pub type Vector2 = (u32, u32);
 #[derive(Properties, PartialEq)]
 pub struct BoardProps {
     pub active: UseStateHandle<bool>,
-    pub callback: Callback<Vector2>
+    pub hover: Callback<Vector2>,
+    pub click: Callback<Vector2>
 }
 
 #[function_component]
@@ -34,9 +35,14 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
                 html! {
                 <button class="gridbutton" 
                 onmouseover = {
-                    let callback = props.callback.clone();
+                    let ship_hover = props.hover.clone();
                     Callback::from(
-                        move |_| callback.emit((x, y)))
+                        move |_| ship_hover.emit((x, y)))
+                }
+                onmousedown = {
+                    let ship_click = props.click.clone();
+                    Callback::from(
+                        move |_| ship_click.emit((x, y)))
                 }
                 onmouseleave={cb.clone()}>
                 </button>
@@ -53,7 +59,7 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
 pub struct CShipProps {
     pub position: UseStateHandle<Vector2>,
     pub active: UseStateHandle<bool>,
-    pub length: u32,
+    pub length: Vector2,
 }
 
 #[function_component]
@@ -61,10 +67,13 @@ pub fn CurrentShipGUI(props: &CShipProps) -> Html
 {
     let (x, y) = &*props.position;
     let active = &*props.active;
-    let length = props.length;
+    let (lx, ly) = props.length;
 
     html! {
-        <div class="ship" style={format!("left: {}; top: {}; width: {}; display: {};", 
-        (x*30) + 38, (y*30) + 38, length * 30, if *active {"grid"} else {"none"})}/>
+        <div class="ship" style={format!("left: {}; top: {}; 
+        width: {}; height: {}; display: {};", 
+        (x*30) + 38, (y*30) + 38,
+        lx * 30, ly * 30, 
+        if *active {"grid"} else {"none"})}/>
     }
 }

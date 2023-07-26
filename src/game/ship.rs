@@ -50,6 +50,11 @@ impl Ship
 							position.0 < self.position.0 + self.length,
 		}
 	}
+
+	pub fn size(self) -> Vector2
+	{
+		if self.vertical {(1, self.length)} else {(self.length, 1)}
+	}
 }
 
 #[cfg(test)]
