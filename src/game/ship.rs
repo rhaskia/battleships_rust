@@ -3,7 +3,7 @@ type Vector2 = (u32, u32);
 pub struct Ship 
 {
 	pub name: String,
-	length: u32,
+	pub length: u32,
 	position: Vector2,
 	vertical: bool,
 }

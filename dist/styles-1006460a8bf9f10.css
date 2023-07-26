@@ -44,10 +44,10 @@
   font-weight: bolder;
 }
 
-.gridbutton:hover {
-  background-color: rgba(255, 255, 255, 0.5);
-}
-
-.gridbutton:active {
-  background-color: rgba(255, 255, 255, 0.8);
+.ship {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border: solid greenyellow;
+  pointer-events: none;
 }
