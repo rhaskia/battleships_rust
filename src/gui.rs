@@ -69,7 +69,7 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
 pub struct CShipProps {
     pub position: UseStateHandle<Vector2>,
     pub active: UseStateHandle<bool>,
-    pub length: Vector2,
+    pub length: Callback<(), Vector2>,
 }
 
 #[function_component]
@@ -77,7 +77,7 @@ pub fn CurrentShipGUI(props: &CShipProps) -> Html
 {
     let (x, y) = &*props.position;
     let active = &*props.active;
-    let (lx, ly) = props.length;
+    let (lx, ly) = props.length.emit(());
 
     html! {
         <div class="ship" style={format!("left: {}; top: {}; 

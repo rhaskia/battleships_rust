@@ -2,19 +2,30 @@ mod gui;
 mod game;
 
 use yew::prelude::*;
-use gui::*;
-use game::*;
 use gloo_console::log;
 use wasm_bindgen::JsValue;
+
+use gui::*;
+use game::*;
 
 #[function_component]
 fn App() -> Html
 {
-    let currentShip = game::ship::Ship::new("destroyer", 5, (0, 0), false);
+    let currentShip = use_state(|| Ship::new("destroyer", 5));
 
     let ship_pos = use_state(|| (0u32, 0u32));
     let ship_active = use_state(|| false);
-    let length = currentShip.size();
+
+    let mut placed_ships = use_state(|| Vec::<Ship>::new());
+
+    let length: Callback<(), Vector2> = {
+        let currentShip = currentShip.clone();
+        Callback::from(move |_| {
+        log!(currentShip.size().0);
+        currentShip.size()
+    })
+    };  
+    
 
     let ship_hover = {
         let ship_pos = ship_pos.clone();
@@ -27,14 +38,20 @@ fn App() -> Html
     };
 
     let ship_place = {
+        let placed_ships = placed_ships.clone();
         Callback::from(move |pos: Vector2| {
-            log!("Hello", JsValue::from(pos.0), JsValue::from(pos.1))
+            placed_ships.set(vec![]);
         })
     };
     
     let ship_control = {
+        let currentShip = currentShip.clone();
         Callback::from(move |e: KeyboardEvent| {
-            log!("Hello", (e.key_code() as u8 as char).to_string())
+            if e.key_code() == 'R' as u8 as u32
+            {
+                currentShip.set(currentShip.rotate());
+                log!(currentShip.is_vertical());
+            }
         })
     };
 
@@ -42,7 +59,9 @@ fn App() -> Html
     {
         <>
         <BoardGUI hover={ship_hover} click={ship_place} 
-        active={ship_active.clone()} keydown={ship_control}/>
+        keydown={ship_control.clone()} active={ship_active.clone()}/>
+
+
         <CurrentShipGUI position={ship_pos.clone()}
          active={ship_active.clone()} {length}/>
         </>
