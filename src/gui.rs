@@ -87,3 +87,22 @@ pub fn CurrentShipGUI(props: &CShipProps) -> Html
         if *active {"grid"} else {"none"})}/>
     }
 }
+
+#[derive(Properties, PartialEq)]
+pub struct ShipsProps {
+    pub ships: UseStateHandle<Vec<(Vector2, Vector2)>>,
+}
+
+#[function_component]
+pub fn ShipsGUI(props: &CShipProps) -> Html
+{
+    let ships = &*props.ships;
+
+    html! {
+        <div class="ship" style={format!("left: {}; top: {};
+        width: {}; height: {}; display: {};",
+        (x*30) + 38, (y*30) + 38,
+        lx * 30, ly * 30,
+        if *active {"grid"} else {"none"})}/>
+    }
+}
