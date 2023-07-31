@@ -4,7 +4,7 @@ type Vector2 = (u32, u32);
 pub struct Ship 
 {
 	pub name: String,
-	pub length: u32,
+	length: u32,
 	position: Vector2,
 	vertical: bool,
 }
@@ -21,6 +21,7 @@ impl Ship
 	{
 		self.position = pos;
 	}
+	pub fn get_position(&self) -> Vector2 { self.position }
 
 	pub fn rotate(&self) -> Ship
 	{

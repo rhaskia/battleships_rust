@@ -90,19 +90,19 @@ pub fn CurrentShipGUI(props: &CShipProps) -> Html
 
 #[derive(Properties, PartialEq)]
 pub struct ShipsProps {
-    pub ships: UseStateHandle<Vec<(Vector2, Vector2)>>,
+    pub ships: Callback<(), Vec<(Vector2, Vector2)>>,
 }
 
 #[function_component]
-pub fn ShipsGUI(props: &CShipProps) -> Html
+pub fn ShipsGUI(props: &ShipsProps) -> Html
 {
-    let ships = &*props.ships;
+    let ships = props.ships.emit(());
 
     html! {
-        <div class="ship" style={format!("left: {}; top: {};
-        width: {}; height: {}; display: {};",
-        (x*30) + 38, (y*30) + 38,
-        lx * 30, ly * 30,
-        if *active {"grid"} else {"none"})}/>
+        <div>
+            {ships.iter().map(
+            |ship| html!{<div style="display:block; width: 30px; height: 40px"/>}
+            ).collect::<Html>()}
+        </div>
     }
 }
