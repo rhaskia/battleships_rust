@@ -28,7 +28,6 @@
    width: 30px;
    height: 30px;
    border: solid rgb(37, 37, 39);
-   background-color:rgba(245, 245, 245, 0);
 }
 
 .gridnumber 
@@ -53,4 +52,12 @@
    height: 30px;
    border: solid greenyellow;
    pointer-events:none; 
+}
+
+.hit-button {
+   color: red;
+}
+
+.miss-button {
+   color: deepskyblue;
 }

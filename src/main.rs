@@ -13,17 +13,11 @@ fn App() -> Html
 {
     let current_ship = use_state(|| Ship::new("destroyer", 5));
 
-    let ship_pos = use_state(|| (0u32, 0u32));
-    let ship_active = use_state(|| false);
+    let hit_to_place = use_state(|| (0u32, 0u32));
+    let hit_active = use_state(|| false);
 
-    let mut placed_ships = use_state(|| Vec::<Ship>::new());
-    let ships_cb: Callback<(), Vec<(Vector2, Vector2)>> = {
-        let placed_ships = placed_ships.clone();
-        Callback::from(move |_| {
-            placed_ships.iter().map(|ship| (ship.get_position(), ship.size()))
-                .collect::<Vec<(Vector2, Vector2)>>()
-        })
-    };
+    let mut placed_hits = use_state(|| Vec::<Vector2>::new());
+    let ships = create_ships();
 
     let length: Callback<(), Vector2> = {
         let current_ship = current_ship.clone();
@@ -32,22 +26,28 @@ fn App() -> Html
     })
     };
 
-    let ship_hover = {
-        let ship_pos = ship_pos.clone();
-        let ship_active = ship_active.clone();
-
+    let cell_status: Callback<Vector2, CellStatus> = {
         Callback::from(move |pos: Vector2| {
-            ship_pos.set(pos);
-            ship_active.set(pos.0 + 5 <= 10);
+            CellStatus::None
         })
     };
 
-    let ship_place = {
-        let placed_ships = placed_ships.clone();
+    let hit_hover = {
+        let hit_to_place = hit_to_place.clone();
+        let hit_active = hit_active.clone();
+
         Callback::from(move |pos: Vector2| {
-            let mut ships = (*placed_ships).clone();
-            ships.push(Ship::new("whuh", 3));
-            placed_ships.set(ships);
+            hit_to_place.set(pos);
+            hit_active.set(true);
+        })
+    };
+
+    let hit_place = {
+        let placed_hits = placed_hits.clone();
+        Callback::from(move |pos: Vector2| {
+            let mut hits = (*placed_hits).clone();
+            hits.push(pos);
+            placed_hits.set(hits);
         })
     };
     
@@ -65,13 +65,11 @@ fn App() -> Html
     html! 
     {
         <>
-        <BoardGUI hover={ship_hover} click={ship_place} 
-        keydown={ship_control.clone()} active={ship_active.clone()}/>
+        <BoardGUI hover={hit_hover} click={hit_place} {cell_status}
+        keydown={ship_control.clone()} active={hit_active.clone()}/>
 
-        <CurrentShipGUI position={ship_pos.clone()}
-         active={ship_active.clone()} {length}/>
-
-        <ShipsGUI ships={ships_cb} />
+        <CurrentHitGUI position={hit_to_place.clone()}
+         active={hit_active.clone()}/>
         </>
     }
 }

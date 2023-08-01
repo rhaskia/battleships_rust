@@ -3,12 +3,20 @@ use yew::virtual_dom::ListenerKind::onkeydown;
 
 pub type Vector2 = (u32, u32);
 
+#[derive(PartialEq)]
+pub enum CellStatus {
+    None,
+    Hit,
+    Miss,
+}
+
 #[derive(Properties, PartialEq)]
 pub struct BoardProps {
     pub active: UseStateHandle<bool>,
     pub hover: Callback<Vector2>,
     pub click: Callback<Vector2>,
-    pub keydown: Callback<KeyboardEvent>
+    pub keydown: Callback<KeyboardEvent>,
+    pub cell_status: Callback<Vector2, CellStatus>
 }
 
 #[function_component]
@@ -50,7 +58,8 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
                 <div class="gridnumber">{ format!("{}", y + 1)} </div>
                 {(0..10).map(|x| 
                 html! {
-                <button class="gridbutton" 
+                <button class="gridbutton"
+                disabled = {props.cell_status.clone().emit((x, y)) == CellStatus::None}
                 onmouseover = {hover(x, y)}
                 onmousedown = {click(x, y)}
                 onmouseleave={cb.clone()}
@@ -69,21 +78,18 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
 pub struct CShipProps {
     pub position: UseStateHandle<Vector2>,
     pub active: UseStateHandle<bool>,
-    pub length: Callback<(), Vector2>,
 }
 
 #[function_component]
-pub fn CurrentShipGUI(props: &CShipProps) -> Html
+pub fn CurrentHitGUI(props: &CShipProps) -> Html
 {
     let (x, y) = &*props.position;
     let active = &*props.active;
-    let (lx, ly) = props.length.emit(());
 
     html! {
         <div class="ship" style={format!("left: {}; top: {}; 
-        width: {}; height: {}; display: {};", 
+        width: 30px; height: 30px; display: {};",
         (x*30) + 38, (y*30) + 38,
-        lx * 30, ly * 30, 
         if *active {"grid"} else {"none"})}/>
     }
 }
