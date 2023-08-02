@@ -12,8 +12,6 @@ pub enum CellStatus {
 
 #[derive(Properties, PartialEq)]
 pub struct BoardProps {
-    pub active: UseStateHandle<bool>,
-    pub hover: Callback<Vector2>,
     pub click: Callback<Vector2>,
     pub keydown: Callback<KeyboardEvent>,
     pub cell_status: Callback<Vector2, CellStatus>
@@ -21,16 +19,6 @@ pub struct BoardProps {
 
 #[function_component]
 pub fn BoardGUI(props: &BoardProps) -> Html {
-    let cb = {
-        let active = props.active.clone();
-        Callback::from(move |_| active.set(false))
-    };
-
-    let hover = |x: u32, y: u32| {
-        let ship_hover = props.hover.clone();
-        Callback::from(move |_| ship_hover.emit((x, y)))
-    };
-
     let click = |x: u32, y: u32| {
         let ship_click = props.click.clone();
         Callback::from(move |_| ship_click.emit((x, y)))
@@ -41,32 +29,50 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
         Callback::from(move |e: KeyboardEvent| ship_key.emit(e))
     };
 
+    let cs = |x: u32, y: u32| -> &str {
+        match props.cell_status.clone().emit((x, y)) {
+            CellStatus::None => "",
+            CellStatus::Hit => "hit",
+            CellStatus::Miss => "miss",
+        }
+    };
+
+    let inner = |x: u32, y: u32| -> Html {
+        match props.cell_status.clone().emit((x, y)) {
+            CellStatus::None => html!{<></>},
+            CellStatus::Hit => html!{
+                <svg style="margin: auto;" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 2.00049L10 10.0005M18 18.0005L10 10.0005M10 10.0005L18 2.00049M10 10.0005L2 18.0005" stroke="black" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>},
+            CellStatus::Miss => html!{
+                <svg style="margin: auto;" width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="5" cy="5.00049" r="5" fill="black"/>
+                </svg>},
+        }
+    };
+
     html! {
-        <div class="gridcontainer">
-
-        <div class="gridrow">
-            <div class = "gridnumber"/>
-            {(0..10).map(|x| html!
-            { <div class="gridnumber"> { format!("{}", x + 1)} </div> })
-            .collect::<Html>()}
-        </div>
-
+        <div class="grid-container">
         <div class="grid">
             { (0..10).map(|y|
-            html!{ 
-            <div class="gridrow">
-                <div class="gridnumber">{ format!("{}", y + 1)} </div>
+            html!{
+                <div class="grid-number grid-label">{(y + 1)}</div>
+            }).collect::<Html>()}
+
+            <>
+            <div class="grid-row">
+                <div class="grid-letter grid-label">{(y + 65) as u8 as char}</div>
                 {(0..10).map(|x| 
                 html! {
-                <button class="gridbutton"
-                disabled = {props.cell_status.clone().emit((x, y)) == CellStatus::None}
-                onmouseover = {hover(x, y)}
+                <button class={format!("grid-button {}", cs(x, y))}
+                disabled = {cs(x, y) != ""}
                 onmousedown = {click(x, y)}
-                onmouseleave={cb.clone()}
                 onkeydown={keydown.clone()}>
+                {inner(x, y)}
                 </button>
                 }).collect::<Html>()}
             </div>
+            </>
             }).collect::<Html>()}
         </div>
 
@@ -77,20 +83,17 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
 #[derive(Properties, PartialEq)]
 pub struct CShipProps {
     pub position: UseStateHandle<Vector2>,
-    pub active: UseStateHandle<bool>,
 }
 
 #[function_component]
 pub fn CurrentHitGUI(props: &CShipProps) -> Html
 {
     let (x, y) = &*props.position;
-    let active = &*props.active;
 
     html! {
         <div class="ship" style={format!("left: {}; top: {}; 
-        width: 30px; height: 30px; display: {};",
-        (x*30) + 38, (y*30) + 38,
-        if *active {"grid"} else {"none"})}/>
+        width: 30px; height: 30px;",
+        (x*30) + 38, (y*30) + 38)}/>
     }
 }
 

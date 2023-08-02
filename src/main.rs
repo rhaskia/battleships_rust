@@ -27,7 +27,14 @@ fn App() -> Html
     };
 
     let cell_status: Callback<Vector2, CellStatus> = {
+        let placed_hits = placed_hits.clone();
         Callback::from(move |pos: Vector2| {
+            for hit in &*placed_hits {
+                if *hit == pos {
+                    return CellStatus::Hit;
+                }
+            }
+            log!("call");
             CellStatus::None
         })
     };
@@ -47,6 +54,7 @@ fn App() -> Html
         Callback::from(move |pos: Vector2| {
             let mut hits = (*placed_hits).clone();
             hits.push(pos);
+            log!(hits.len());
             placed_hits.set(hits);
         })
     };
@@ -65,11 +73,10 @@ fn App() -> Html
     html! 
     {
         <>
-        <BoardGUI hover={hit_hover} click={hit_place} {cell_status}
-        keydown={ship_control.clone()} active={hit_active.clone()}/>
+        <BoardGUI click={hit_place} {cell_status}
+        keydown={ship_control.clone()}/>
 
-        <CurrentHitGUI position={hit_to_place.clone()}
-         active={hit_active.clone()}/>
+        <CurrentHitGUI position={hit_to_place.clone()}/>
         </>
     }
 }
