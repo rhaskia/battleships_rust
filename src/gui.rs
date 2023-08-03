@@ -52,10 +52,17 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
     };
 
     html! {
+        <>
+        <div class="button-menu">
+            <button class="menu-button" style="text-align: left;">{"Back"}</button>
+            <div style="flex: .1 1 0;"/>
+            <button class="menu-button" style="text-align: right;">{"Back"}</button>
+        </div>
+
         <div class="grid-container">
         <div class="grid">
             <div class="grid-row" style="max-height: 5%;">
-            <div class="grid-label" style="min-width: 2%;"></div>
+            <div class="grid-label" style="min-width: 5%;"></div>
             { (0..10).map(|y|
             html!{
                 <div class="grid-number grid-label">{(y + 1)}</div>
@@ -71,7 +78,7 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
 
                 <button
                 class ={format!("grid-button {}", cs(x, y))}
-                title = {format!("{}{}", (y + 65) as u8 as char, x)}
+                title = {format!("{}{}", (y + 65) as u8 as char, x + 1)}
                 disabled = {cs(x, y) != ""}
                 onmousedown = {click(x, y)}
                 onkeydown = {keydown.clone()}>
@@ -85,6 +92,7 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
         </div>
 
         </div>
+        </>
     }
 }
 

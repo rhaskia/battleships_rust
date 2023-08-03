@@ -1,8 +1,20 @@
+@media (max-width: 800px) {
+   .grid-container {
+      width: 90vw;
+      height: 90vw;
+   }
+}
+
+@media (min-width: 801px) {
+   .grid-container {
+      width: 32vw;
+      height: 32vw;
+   }
+}
+
 .grid-container {
    display: flex;
    position: relative;
-   width: 32vw;
-   height: 32vw;
 
    background: #699BF7;
    border: 3px solid #000000;
@@ -10,6 +22,8 @@
    border-radius: 16px;
 
    margin: auto;
+
+   top: 2%;
 }
 
 .menu-button {
@@ -17,15 +31,25 @@
    border: 2px solid #000000;
    box-shadow: 2px 2px 0px #000000;
    border-radius: 16px;
+   min-height: 20%;
+   flex: 1 1 0;
+   font-size: 120%;
+}
+
+.button-menu {
+   display: flex;
+   position: relative;
+   width: 32vw;
+   margin: auto;
 }
 
 .grid {
    display: flex;
    flex-direction: column;
-   width: 92%;
-   height: 92%;
-   left: 5%;
-   top: 5%;
+   width: 94%;
+   height: 94%;
+   left: 3%;
+   top: 3%;
    position: relative;
    justify-content: space-between;
    gap: 1% 1%;
@@ -69,7 +93,7 @@
 
    align-content: space-around;
    justify-content: space-around;
-   font-size: 14px;
+   font-size: 16px;
    line-height: 100%;
    align-self: center;
 }

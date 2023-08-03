@@ -73,7 +73,9 @@ fn App() -> Html
     html! 
     {
         <>
-        <button class="menu-button">{"Back"}</button>
+        <div style="display: flex; width: 30vw;">
+
+        </div>
         <BoardGUI click={hit_place} {cell_status}
         keydown={ship_control.clone()}/>
 
