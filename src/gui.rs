@@ -41,11 +41,11 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
         match props.cell_status.clone().emit((x, y)) {
             CellStatus::None => html!{<></>},
             CellStatus::Hit => html!{
-                <svg style="margin: auto;" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="hit-marker" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2 2.00049L10 10.0005M18 18.0005L10 10.0005M10 10.0005L18 2.00049M10 10.0005L2 18.0005" stroke="black" stroke-width="2.5" stroke-linecap="round"/>
                 </svg>},
             CellStatus::Miss => html!{
-                <svg style="margin: auto;" width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="miss-marker" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="5" cy="5.00049" r="5" fill="black"/>
                 </svg>},
         }
@@ -54,11 +54,15 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
     html! {
         <div class="grid-container">
         <div class="grid">
+            <div class="grid-row" style="max-height: 5%;">
+            <div class="grid-label" style="min-width: 2%;"></div>
             { (0..10).map(|y|
             html!{
                 <div class="grid-number grid-label">{(y + 1)}</div>
             }).collect::<Html>()}
+            </div>
 
+            { (0..10).map(|y| html! {
             <>
             <div class="grid-row">
                 <div class="grid-letter grid-label">{(y + 65) as u8 as char}</div>

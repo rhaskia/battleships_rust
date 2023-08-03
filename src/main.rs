@@ -31,7 +31,7 @@ fn App() -> Html
         Callback::from(move |pos: Vector2| {
             for hit in &*placed_hits {
                 if *hit == pos {
-                    return CellStatus::Hit;
+                    return CellStatus::Miss;
                 }
             }
             log!("call");
@@ -73,6 +73,7 @@ fn App() -> Html
     html! 
     {
         <>
+        <button class="menu-button">{"Back"}</button>
         <BoardGUI click={hit_place} {cell_status}
         keydown={ship_control.clone()}/>
 
