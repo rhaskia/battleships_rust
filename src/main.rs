@@ -30,11 +30,14 @@ fn App() -> Html
         let placed_hits = placed_hits.clone();
         Callback::from(move |pos: Vector2| {
             for hit in &*placed_hits {
-                if *hit == pos {
-                    return CellStatus::Miss;
+                if *hit != pos { continue; }
+
+                return match position_hits_ship(&ships, *hit) {
+                    true => CellStatus::Hit,
+                    false => CellStatus::Miss,
                 }
             }
-            log!("call");
+
             CellStatus::None
         })
     };
@@ -73,11 +76,10 @@ fn App() -> Html
     html! 
     {
         <>
-        <div style="display: flex; width: 30vw;">
-
-        </div>
+        <div class="game-container">
         <BoardGUI click={hit_place} {cell_status}
         keydown={ship_control.clone()}/>
+        </div>
 
         <CurrentHitGUI position={hit_to_place.clone()}/>
         </>

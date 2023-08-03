@@ -1,17 +1,19 @@
-@media (max-width: 800px) {
-  /* CSS that should be displayed if width is equal to or less than 800px goes here */
-}
 .grid-container {
   display: flex;
   position: relative;
-  width: 32vw;
-  height: 32vw;
   background: #699BF7;
   border: 3px solid #000000;
   box-shadow: 3px 3px 0px #000000;
   border-radius: 16px;
+  width: 100%;
+  height: 100%;
+  top: 3%;
+}
+
+.game-container {
+  width: 32vw;
+  height: 32vw;
   margin: auto;
-  top: 2%;
 }
 
 .menu-button {
@@ -19,15 +21,17 @@
   border: 2px solid #000000;
   box-shadow: 2px 2px 0px #000000;
   border-radius: 16px;
-  min-height: 20%;
   flex: 1 1 0;
   font-size: 120%;
+  padding-left: 5%;
+  padding-right: 5%;
 }
 
 .button-menu {
   display: flex;
   position: relative;
-  width: 32vw;
+  width: 100%;
+  height: 8%;
   margin: auto;
 }
 
@@ -59,7 +63,6 @@
   height: 100%;
   background-color: white;
   border: 2px solid #000000;
-  padding: 10px;
   box-shadow: 2px 2px 0px #000000;
   border-radius: 8px;
   flex: 1;
@@ -77,7 +80,7 @@
   background-color: rgba(245, 245, 245, 0);
   align-content: space-around;
   justify-content: space-around;
-  font-size: 16px;
+  font-size: 120%;
   line-height: 100%;
   align-self: center;
 }
@@ -89,7 +92,6 @@
 
 .grid-letter {
   flex: 0.5;
-  height: 48px;
   display: grid;
   min-width: 5%;
 }
@@ -109,8 +111,6 @@
 .hit-marker {
   align-self: center;
   justify-self: center;
-  width: 150%;
-  height: 150%;
 }
 
 .miss {
@@ -120,6 +120,19 @@
 .miss-marker {
   align-self: center;
   justify-self: center;
-  width: 50%;
-  height: 50%;
+}
+
+/* On screens that are 992px or less, set the background color to blue */
+@media screen and (max-width: 900px) {
+  .game-container {
+    width: 60vw;
+    height: 60vw;
+  }
+}
+/* On screens that are 600px or less, set the background color to olive */
+@media screen and (max-width: 600px) {
+  .game-container {
+    width: 90vw;
+    height: 90vw;
+  }
 }

@@ -45,8 +45,8 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
                 <path d="M2 2.00049L10 10.0005M18 18.0005L10 10.0005M10 10.0005L18 2.00049M10 10.0005L2 18.0005" stroke="black" stroke-width="2.5" stroke-linecap="round"/>
                 </svg>},
             CellStatus::Miss => html!{
-                <svg class="miss-marker" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" alt="miss">
-                <circle cx="5" cy="5.00049" r="5" fill="black"/>
+                <svg class="miss-marker" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" alt="miss">
+                <circle cx="10" cy="10" r="5" fill="black"/>
                 </svg>},
         }
     };
@@ -54,9 +54,9 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
     html! {
         <>
         <div class="button-menu">
-            <button class="menu-button" style="text-align: left;">{"Back"}</button>
+            <button class="menu-button" style="text-align: left;">{"←  Back"}</button>
             <div style="flex: .1 1 0;"/>
-            <button class="menu-button" style="text-align: right;">{"Back"}</button>
+            <button class="menu-button" style="text-align: right;">{"Retry  →"}</button>
         </div>
 
         <div class="grid-container">

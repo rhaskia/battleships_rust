@@ -50,7 +50,7 @@ impl Ship
 		.any(|item| other.positions().contains(item))
 	}	
 
-	pub fn point_hit(self, position: Vector2) -> bool 
+	pub fn point_hit(&self, position: Vector2) -> bool 
 	{
 		match self.vertical 
 		{
