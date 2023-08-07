@@ -64,6 +64,15 @@ impl Ship
 		}
 	}
 
+	pub fn ship_sunk(&self, hits: &Vec<Vector2>) -> bool
+	{
+		for pos in self.positions() {
+			if !hits.contains(&pos) { return false; }
+		}
+
+		true
+	}
+
 	pub fn size(&self) -> Vector2
 	{
 		if self.vertical {(1, self.length)} else {(self.length, 1)}

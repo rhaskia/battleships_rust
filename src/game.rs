@@ -1,5 +1,6 @@
 pub mod ship;
 pub use ship::*;
+use crate::gui::Vector2;
 
 pub fn default_ships() -> Vec<Ship> 
 {
@@ -21,3 +22,4 @@ pub fn position_hits_ship(ships: &Vec<Ship>, pos: (u32, u32)) -> bool
 
 	false
 }
+
