@@ -3,6 +3,7 @@ mod game;
 
 use yew::prelude::*;
 use gloo_console::log;
+use wasm_bindgen::JsValue;
 
 use gui::*;
 use game::*;
@@ -38,8 +39,6 @@ fn App() -> Html {
 
     let cell_status: Callback<Vector2, CellStatus> = {
         let placed_hits = placed_hits.clone();
-        let ships = ships.clone();
-
         Callback::from(move |pos: Vector2| {
             for hit in &*placed_hits {
                 if *hit != pos { continue; }
@@ -66,21 +65,16 @@ fn App() -> Html {
 
     let hit_place = {
         let placed_hits = placed_hits.clone();
-        let game_finished = game_finished.clone();
-        let ships = ships.clone();
-
         Callback::from(move |pos: Vector2| {
             let mut hits = (*placed_hits).clone();
             hits.push(pos);
-            placed_hits.set(hits.clone());
-
-            if all_ships_sunk(&ships, &hits) { game_finished.set(true); }
+            log!(hits.len());
+            placed_hits.set(hits);
         })
     };
     
     let ship_control = {
         let current_ship = current_ship.clone();
-
         Callback::from(move |e: KeyboardEvent| {
             if e.key_code() == 'R' as u8 as u32
             {
@@ -93,13 +87,6 @@ fn App() -> Html {
     html! {
         <>
         <div class="game-container">
-
-        <div class="button-menu">
-            <button class="menu-button" style="text-align: left;">{"←  Back"}</button>
-            <div style="flex: .1 1 0;"/>
-            <button class="menu-button" style="text-align: right;">{"Retry  →"}</button>
-        </div>
-
         <BoardGUI click={hit_place} {cell_status}
         keydown={ship_control.clone()} active={game_finished.clone()}/>
 
@@ -108,6 +95,8 @@ fn App() -> Html {
             <center>{"You Won!"}</center>
         </Notification>
         </div>
+
+        <CurrentHitGUI position={hit_to_place.clone()}/>
         </>
     }
 }
