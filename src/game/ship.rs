@@ -16,7 +16,7 @@ impl Ship
 		Ship { name, length, position: (0, 0), vertical: false }
 	} 
 
-	pub fn set_position(mut self, pos: Vector2)  { self.position = pos; }
+	pub fn set_position(&mut self, pos: Vector2)  { self.position = pos; }
 
 	pub fn get_position(&self) -> Vector2 { self.position }
 
