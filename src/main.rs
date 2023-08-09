@@ -8,23 +8,32 @@ use gui::*;
 use game::*;
 
 #[function_component]
-fn App() -> Html
-{
-    let current_ship = use_state(|| Ship::new("destroyer", 5));
+fn App() -> Html {
+    let current_ship = use_state_eq(|| Ship::new("destroyer", 5));
 
-    let hit_to_place = use_state(|| (0u32, 0u32));
-    let hit_active = use_state(|| false);
+    let hit_to_place = use_state_eq(|| (0u32, 0u32));
+    let hit_active = use_state_eq(|| false);
 
-    let placed_hits = use_state(|| Vec::<Vector2>::new());
-    let ships = use_state(|| create_ships());
+    let placed_hits = use_state_eq(|| Vec::<Vector2>::new());
+    let ships = use_state_eq(|| create_ships());
 
-    let game_finished = use_state(|| false);
+    let game_finished = use_state_eq(|| false);
 
     let length: Callback<(), Vector2> = {
         let current_ship = current_ship.clone();
         Callback::from(move |_| {
         current_ship.size()
     })
+    };
+
+    let reset_game = || {
+        let placed_hits = placed_hits.clone();
+        let ships = ships.clone();
+        let game_finished = game_finished.clone();
+
+        ships.set(create_ships());
+        placed_hits.set(vec![]);
+        game_finished.set(false);
     };
 
     let cell_status: Callback<Vector2, CellStatus> = {
@@ -81,8 +90,7 @@ fn App() -> Html
         })
     };
 
-    html! 
-    {
+    html! {
         <>
         <div class="game-container">
 
@@ -97,14 +105,13 @@ fn App() -> Html
 
         <Notification active={game_finished.clone()} 
         right_button={"← Close"} left_button={"Retry →"}>
-            <h1>{"You Won!"}</h1>
+            <center>{"You Won!"}</center>
         </Notification>
         </div>
         </>
     }
 }
 
-fn main() 
-{
+fn main() {
     yew::Renderer::<App>::new().render();
 }

@@ -1,6 +1,6 @@
 pub type Vector2 = (u32, u32);
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct Ship 
 {
 	pub name: String,
