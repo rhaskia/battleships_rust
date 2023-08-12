@@ -1,6 +1,8 @@
+use gloo_console::log;
+
 pub type Vector2 = (u32, u32);
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Ship 
 {
 	pub name: String,
@@ -28,30 +30,30 @@ impl Ship
 	
 	pub fn positions(&self) -> Vec<Vector2> {
 		match self.vertical {
-			false => (self.position.0..(self.position.1 + self.length))
+			false => (self.position.0..(self.position.0 + self.length))
 					.map(|x| (x, self.position.1))
 					.collect(),
 			
-			true => (self.position.0..(self.position.1 + self.length))
+			true => (self.position.1..(self.position.1 + self.length))
 					.map(|y| (self.position.0, y))
 					.collect(),
 		} 
 	}
 	
-	pub fn collides(self, other: &Ship) -> bool {
+	pub fn collides(&self, other: &Ship) -> bool {
 		self.positions().iter()
 		.any(|item| other.positions().contains(item))
 	}	
 
-	pub fn point_hit(&self, position: Vector2) -> bool {
+	pub fn point_hit(&self, point: Vector2) -> bool {
 		match self.vertical {
-			true => position.0 == self.position.0 &&
-					self.position.1 <= position.1 &&
-					position.1 < self.position.1 + self.length,
+			true => point.0 == self.position.0 &&
+					point.1 >= self.position.1 &&
+					point.1 < self.position.1 + self.length,
 			
-			false => position.1 == self.position.1 &&
-					self.position.0 <= position.0 &&
-					position.0 < self.position.0 + self.length,
+			false => point.1 == self.position.1 &&
+					point.0 >= self.position.0 &&
+					point.0 < self.position.0 + self.length,
 		}
 	}
 
@@ -62,11 +64,9 @@ impl Ship
 	pub fn is_vertical(&self) -> bool { self.vertical }
 
 	pub fn is_sunk(&self, hits: &Vec<Vector2>) -> bool {
-		for pos in self.positions() {
-			if !hits.contains(&pos) { return false; }
-		}
-
-		true
+		let sf = self.positions();
+		log!(format!("{:?}, {:?}", sf, hits));
+		sf.iter().all(|item| hits.contains(item))
 	}
 }
 
@@ -75,17 +75,25 @@ mod tests {
 	use crate::game::ship::*;
 	
   #[test]
-  fn ship_positions() 
-  {
+  	fn ship_positions() 
+  	{
 		let ship = Ship::new("destroyer", 5);
 		assert_eq!(ship.positions(), 
-				   vec![(0, 0), (0, 1), (0, 2), (0, 3), (0, 4)]);
-  }
+		vec![(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)]);
+  	}
+
+	fn ship_positions_rotated() 
+  	{
+		let ship = Ship::new("destroyer", 5);
+		let ship = ship.rotate();
+		assert_eq!(ship.positions(), 
+		vec![(0, 0), (0, 1), (0, 2), (0, 3), (0, 4)]);
+  	}
 
 	#[test]
   	fn colliding() 
 	{
-		let ship = Ship::new("destroyer", 5);
+		let mut ship = Ship::new("destroyer", 5);
 		ship.set_position((0, 2));
 		let ship2 = Ship::new("destroyer", 5);
 		ship.set_position((2, 0));
@@ -104,7 +112,7 @@ mod tests {
   	fn hit_end() 
 	{
 		let ship = Ship::new("destroyer", 5);
-		assert!(ship.point_hit((0, 4)));
+		assert!(ship.point_hit((4, 0)));
   	}
 
 	#[test]
@@ -112,6 +120,6 @@ mod tests {
   	fn hit_out() 
 	{
 		let ship = Ship::new("destroyer", 5);
-		assert!(ship.point_hit((0, 5)));
+		assert!(ship.point_hit((5, 0)));
   	}
 }

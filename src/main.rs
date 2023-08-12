@@ -74,7 +74,7 @@ fn App() -> Html {
             hits.push(pos);
             placed_hits.set(hits.clone());
 
-            if game::all_ships_sunk(&ships, &hits) { game_finished.set(true); }
+            if game::all_ships_sunk(&ships, &hits) { log!("whuh"); game_finished.set(true); }
         })
     };
     

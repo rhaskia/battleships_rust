@@ -2,13 +2,16 @@ pub mod ship;
 pub use ship::*;
 pub use rand::*;
 pub mod rand;
+use gloo_console::log;
 
 pub fn default_ships() -> Vec<Ship> {
 	return vec![Ship::new("destroyer", 5)]
 }
 
 pub fn random_ship_pos(ship: &Ship) -> Vector2 {
-	(js_rand(0, 10), js_rand(0, 10))
+	let l = ship.size();
+
+	(js_rand(0, 10 - l.0), js_rand(0, 10 - l.1))	
 }
 
 pub fn create_ships() -> Vec<Ship> {
@@ -24,10 +27,26 @@ pub fn create_ships() -> Vec<Ship> {
 
 	while let Some(mut ship) = ships_to_place.pop() {
 		ship.set_position(random_ship_pos(&ship));
+		if js_rand(0, 2) == 0 { ship = ship.rotate(); } 
+
+		while ship_hits_others(&ship, &placed_ships) {
+			ship.set_position(random_ship_pos(&ship));
+		}
+
+		log!(ship.get_position().0, ship.get_position().1, ship.size().0); 
+
 		placed_ships.push(ship);
 	}
 
 	placed_ships
+}
+
+pub fn ship_hits_others(ship: &Ship, others: &Vec<Ship>) -> bool {
+	for other in others {
+		if other.collides(ship) { return true; }
+	}
+
+	false
 }
 
 pub fn position_hits_ship(ships: &Vec<Ship>, pos: (u32, u32)) -> bool {
@@ -39,5 +58,8 @@ pub fn position_hits_ship(ships: &Vec<Ship>, pos: (u32, u32)) -> bool {
 }
 
 pub fn all_ships_sunk(ships: &Vec<Ship>, hits: &Vec<Vector2>) -> bool {
-	ships.iter().map(|s| s.is_sunk(hits)).all(|x| x)
+	log!(format!("{:?}", ships.iter().map(|x| x.positions())));
+
+	ships.iter().map(|x| x.positions())
+	.flatten().all(|e| hits.contains(&e)) 
 }
