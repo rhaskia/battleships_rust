@@ -13,7 +13,8 @@ pub struct Ship
 
 impl Ship 
 {
-	pub fn new(name_str: &str, length: u32) -> Ship {
+	pub fn new(name_str: &str, length: u32) -> Ship 
+	{
 		let name = name_str.to_string();
 		Ship { name, length, position: (0, 0), vertical: false }
 	} 
@@ -22,7 +23,8 @@ impl Ship
 
 	pub fn get_position(&self) -> Vector2 { self.position }
 
-	pub fn rotate(&self) -> Ship {
+	pub fn rotate(&self) -> Ship
+	{
 		let mut ship = self.clone();
 		ship.vertical = !ship.vertical;
 		ship
@@ -85,6 +87,13 @@ impl Ship
 		log!(format!("{:?}, {:?}", sf, hits));
 		sf.iter().all(|item| hits.contains(item))
 	}
+
+	pub fn size(&self) -> Vector2
+	{
+		if self.vertical {(1, self.length)} else {(self.length, 1)}
+	}
+
+	pub fn is_vertical(&self) -> bool { self.vertical }
 }
 
 #[cfg(test)]
