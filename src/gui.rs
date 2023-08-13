@@ -96,7 +96,7 @@ pub struct NoticeProps {
     pub active: UseStateHandle<bool>,
     pub left_button: &'static str,
     pub right_button: &'static str,
-    pub reset_game: Callback<()>,
+    pub reset_game: Callback<MouseEvent>,
     pub children: Children,
 }
 
@@ -119,7 +119,7 @@ pub fn Notification(props: &NoticeProps) -> Html
 
             <div style="flex: .1 1 0;"/>
             
-            <button class="menu-button" style="text-align: right; height: 100%;"> 
+            <button class="menu-button" style="text-align: right; height: 100%;" onclick={props.reset_game.clone()}>
             {props.left_button} </button>
 
             </div>

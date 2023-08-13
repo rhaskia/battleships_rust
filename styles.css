@@ -1,19 +1,14 @@
-:root {
-   --game-width: 32vw;
-}
-
-/* On screens that are 992px or less, set the background color to blue */
-@media screen and (max-width: 900px) {
-   :root {
-      --game-width: 60vw;
-   }
- }
- 
- @media screen and (max-width: 600px) {
+@media screen and (max-aspect-ratio: 1/1){
    :root {
       --game-width: 90vw;
    }
- }
+}
+
+@media screen and (min-aspect-ratio: 1/1){
+   :root {
+      --game-width: 60vh;
+   }
+}
 
 .grid-container {
    display: flex;
@@ -180,4 +175,8 @@
 .miss-marker {
    align-self: center;
    justify-self: center;
+}
+
+center {
+   font-size: 180%;
 }

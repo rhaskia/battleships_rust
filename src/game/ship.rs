@@ -46,20 +46,21 @@ impl Ship
 	}	
 
 	pub fn touches(&self, other: &Ship) -> bool {
-		let (mut x1, mut y1) = self.position;
-		x1 -= 1;
-		y1 -= 1;
+		let (mut x1, mut y1) = self.get_position();
+		if x1 > 0 { x1 -= 1; }
+		if y1 > 0 { y1 -= 1; }
+
 		let (mut w1, mut h1) = self.size();
 		w1 += 2;
 		h1 += 2;
 
 		let (x2, y2) = other.get_position();
-		let (w2, h2) = self.size();
+		let (w2, h2) = other.size();
 
-		x1 + w1 >= x2 && 
-		x1 <= x2 + w2 && 
- 		y1 + h1 >= y2 &&
-  		y1 <= y2 + h2
+		x1 < x2 + w2 &&
+		x1 + w1 > x2 &&
+		y1 < y2 + h2 &&
+		y1 + h1 > y2
 	}	
 
 	pub fn point_hit(&self, point: Vector2) -> bool {
@@ -91,16 +92,14 @@ impl Ship
 mod tests {
 	use crate::game::ship::*;
 	
-  #[test]
-  	fn ship_positions() 
-  	{
+  	#[test]
+  	fn ship_positions() {
 		let ship = Ship::new("destroyer", 5);
 		assert_eq!(ship.positions(), 
 		vec![(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)]);
   	}
 
-	fn ship_positions_rotated() 
-  	{
+	fn ship_positions_rotated() {
 		let ship = Ship::new("destroyer", 5);
 		let ship = ship.rotate();
 		assert_eq!(ship.positions(), 
@@ -108,34 +107,40 @@ mod tests {
   	}
 
 	#[test]
-  	fn colliding() 
-	{
+  	fn colliding() {
 		let mut ship = Ship::new("destroyer", 5);
 		ship.set_position((0, 2));
-		let ship2 = Ship::new("destroyer", 5);
-		ship.set_position((2, 0));
+		let mut ship2 = Ship::new("destroyer", 5).rotate();
+		ship2.set_position((2, 0));
 		
 		assert!(ship.collides(&ship2));
   	}
 
 	#[test]
-  	fn hit_start() 
-	{
+	fn touches() {
+		let mut ship = Ship::new("destroyer", 3);
+		ship.set_position((0, 0));
+		let mut ship2 = Ship::new("destroyer", 5);
+		ship2.set_position((0, 1));
+
+		assert!(ship.touches(&ship2));
+	}
+
+	#[test]
+  	fn hit_start() {
 		let ship = Ship::new("destroyer", 5);
 		assert!(ship.point_hit((0, 0)));
   	}
 
 	#[test]
-  	fn hit_end() 
-	{
+  	fn hit_end() {
 		let ship = Ship::new("destroyer", 5);
 		assert!(ship.point_hit((4, 0)));
   	}
 
 	#[test]
 	#[should_panic]
-  	fn hit_out() 
-	{
+  	fn hit_out() {
 		let ship = Ship::new("destroyer", 5);
 		assert!(ship.point_hit((5, 0)));
   	}
