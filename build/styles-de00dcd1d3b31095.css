@@ -1,3 +1,18 @@
+:root {
+  --game-width: 32vw;
+}
+
+/* On screens that are 992px or less, set the background color to blue */
+@media screen and (max-width: 900px) {
+  :root {
+    --game-width: 60vw;
+  }
+}
+@media screen and (max-width: 600px) {
+  :root {
+    --game-width: 90vw;
+  }
+}
 .grid-container {
   display: flex;
   position: relative;
@@ -11,9 +26,24 @@
 }
 
 .game-container {
-  width: 32vw;
-  height: 32vw;
+  width: var(--game-width);
+  height: var(--game-width);
   margin: auto;
+}
+
+.notification {
+  background: #699BF7;
+  border: 3px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+  border-radius: 16px;
+  padding: 5px;
+  width: calc(var(--game-width) / 1.5);
+  height: calc(var(--game-width) / 3);
+  z-index: 5;
+  margin: auto;
+  position: relative;
+  top: -75%;
+  flex-direction: column;
 }
 
 .menu-button {
@@ -25,6 +55,16 @@
   font-size: 120%;
   padding-left: 5%;
   padding-right: 5%;
+}
+
+.menu-button:hover {
+  background: #90b9e1;
+}
+
+.menu-button:active {
+  border: 2px solid #000000;
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px #000000;
 }
 
 .button-menu {
@@ -100,6 +140,12 @@
   background-color: #e8e8e8;
 }
 
+.grid-button:active {
+  border: 2px solid #000000;
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px #000000;
+}
+
 .grid-button:disabled {
   pointer-events: none;
 }
@@ -120,19 +166,4 @@
 .miss-marker {
   align-self: center;
   justify-self: center;
-}
-
-/* On screens that are 992px or less, set the background color to blue */
-@media screen and (max-width: 900px) {
-  .game-container {
-    width: 60vw;
-    height: 60vw;
-  }
-}
-/* On screens that are 600px or less, set the background color to olive */
-@media screen and (max-width: 600px) {
-  .game-container {
-    width: 90vw;
-    height: 90vw;
-  }
 }

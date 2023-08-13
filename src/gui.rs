@@ -1,7 +1,6 @@
 use yew::prelude::*;
-use yew::virtual_dom::ListenerKind::onkeydown;
 
-pub type Vector2 = (u32, u32);
+type Vector2 = (u32, u32);
 
 #[derive(PartialEq)]
 pub enum CellStatus {
@@ -14,7 +13,8 @@ pub enum CellStatus {
 pub struct BoardProps {
     pub click: Callback<Vector2>,
     pub keydown: Callback<KeyboardEvent>,
-    pub cell_status: Callback<Vector2, CellStatus>
+    pub cell_status: Callback<Vector2, CellStatus>,
+    pub active: UseStateHandle<bool>,
 }
 
 #[function_component]
@@ -44,6 +44,7 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
                 <svg class="hit-marker" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" alt="hit">
                 <path d="M2 2.00049L10 10.0005M18 18.0005L10 10.0005M10 10.0005L18 2.00049M10 10.0005L2 18.0005" stroke="black" stroke-width="2.5" stroke-linecap="round"/>
                 </svg>},
+
             CellStatus::Miss => html!{
                 <svg class="miss-marker" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" alt="miss">
                 <circle cx="10" cy="10" r="5" fill="black"/>
@@ -53,19 +54,13 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
 
     html! {
         <>
-        <div class="button-menu">
-            <button class="menu-button" style="text-align: left;">{"←  Back"}</button>
-            <div style="flex: .1 1 0;"/>
-            <button class="menu-button" style="text-align: right;">{"Retry  →"}</button>
-        </div>
-
         <div class="grid-container">
         <div class="grid">
             <div class="grid-row" style="max-height: 5%;">
             <div class="grid-label" style="min-width: 5%;"></div>
             { (0..10).map(|y|
             html!{
-                <div class="grid-number grid-label">{(y + 1)}</div>
+                <div class="grid-number grid-label">{y + 1}</div>
             }).collect::<Html>()}
             </div>
 
@@ -79,7 +74,7 @@ pub fn BoardGUI(props: &BoardProps) -> Html {
                 <button
                 class ={format!("grid-button {}", cs(x, y))}
                 title = {format!("{}{}", (y + 65) as u8 as char, x + 1)}
-                disabled = {cs(x, y) != ""}
+                disabled = {*props.active || cs(x, y) != ""}
                 onmousedown = {click(x, y)}
                 onkeydown = {keydown.clone()}>
                 {inner(x, y)}
@@ -106,32 +101,28 @@ pub struct NoticeProps {
 }
 
 #[function_component]
-pub fn CurrentHitGUI(props: &CShipProps) -> Html
+pub fn Notification(props: &NoticeProps) -> Html
 {
-    let (x, y) = &*props.position;
+    let active = *props.active;
 
     html! {
-        <div class="ship" style={format!("left: {}; top: {}; 
-        width: 30px; height: 30px;",
-        (x*30) + 38, (y*30) + 38)}/>
-    }
-}
+        <div class="notification" 
+        style={format!("display: {};", if active {"flex"} else {"none"})}>
+            {props.children.clone()}
 
-#[derive(Properties, PartialEq)]
-pub struct ShipsProps {
-    pub ships: Callback<(), Vec<(Vector2, Vector2)>>,
-}
+            <div style="flex: 1;"/>
 
-#[function_component]
-pub fn ShipsGUI(props: &ShipsProps) -> Html
-{
-    let ships = props.ships.emit(());
+            <div style="width: 100%; display: flex; align-self: flex-end;">
 
-    html! {
-        <div>
-            {ships.iter().map(
-            |ship| html!{<div style="display:block; width: 30px; height: 40px"/>}
-            ).collect::<Html>()}
+            <button class="menu-button" style="text-align: left; height: 100%;"> 
+            {props.right_button} </button>
+
+            <div style="flex: .1 1 0;"/>
+            
+            <button class="menu-button" style="text-align: right; height: 100%;"> 
+            {props.left_button} </button>
+
+            </div>
         </div>
     }
 }
