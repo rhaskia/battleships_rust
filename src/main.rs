@@ -26,14 +26,16 @@ fn App() -> Html {
     })
     };
 
-    let reset_game = || {
+    let reset_game = {
         let placed_hits = placed_hits.clone();
         let ships = ships.clone();
         let game_finished = game_finished.clone();
 
-        ships.set(create_ships());
-        placed_hits.set(vec![]);
-        game_finished.set(false);
+        Callback::from(move |_| {
+            ships.set(create_ships());
+            placed_hits.set(vec![]);
+            game_finished.set(false);
+        })
     };
 
     let cell_status: Callback<Vector2, CellStatus> = {
@@ -103,7 +105,7 @@ fn App() -> Html {
         <BoardGUI click={hit_place} {cell_status}
         keydown={ship_control.clone()} active={game_finished.clone()}/>
 
-        <Notification active={game_finished.clone()} 
+        <Notification active={game_finished.clone()} {reset_game}
         right_button={"← Close"} left_button={"Retry →"}>
             <center>{"You Won!"}</center>
         </Notification>

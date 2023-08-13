@@ -29,7 +29,7 @@ pub fn create_ships() -> Vec<Ship> {
 		ship.set_position(random_ship_pos(&ship));
 		if js_rand(0, 2) == 0 { ship = ship.rotate(); } 
 
-		while ship_hits_others(&ship, &placed_ships) {
+		while ship_touches_others(&ship, &placed_ships) {
 			ship.set_position(random_ship_pos(&ship));
 		}
 
@@ -41,9 +41,9 @@ pub fn create_ships() -> Vec<Ship> {
 	placed_ships
 }
 
-pub fn ship_hits_others(ship: &Ship, others: &Vec<Ship>) -> bool {
+pub fn ship_touches_others(ship: &Ship, others: &Vec<Ship>) -> bool {
 	for other in others {
-		if other.collides(ship) { return true; }
+		if other.touches(ship) { return true; }
 	}
 
 	false

@@ -45,6 +45,23 @@ impl Ship
 		.any(|item| other.positions().contains(item))
 	}	
 
+	pub fn touches(&self, other: &Ship) -> bool {
+		let (mut x1, mut y1) = self.position;
+		x1 -= 1;
+		y1 -= 1;
+		let (mut w1, mut h1) = self.size();
+		w1 += 2;
+		h1 += 2;
+
+		let (x2, y2) = other.get_position();
+		let (w2, h2) = self.size();
+
+		x1 + w1 >= x2 && 
+		x1 <= x2 + w2 && 
+ 		y1 + h1 >= y2 &&
+  		y1 <= y2 + h2
+	}	
+
 	pub fn point_hit(&self, point: Vector2) -> bool {
 		match self.vertical {
 			true => point.0 == self.position.0 &&

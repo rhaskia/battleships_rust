@@ -96,6 +96,7 @@ pub struct NoticeProps {
     pub active: UseStateHandle<bool>,
     pub left_button: &'static str,
     pub right_button: &'static str,
+    pub reset_game: Callback<()>,
     pub children: Children,
 }
 
