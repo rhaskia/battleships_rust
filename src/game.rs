@@ -4,17 +4,14 @@ pub use rand::*;
 pub mod rand;
 use gloo_console::log;
 
-pub fn default_ships() -> Vec<Ship> {
-	return vec![Ship::new("destroyer", 5)]
-}
-
-pub fn random_ship_pos(ship: &Ship) -> Vector2 {
+/// Random position with respect to ship size and board size
+pub fn random_ship_pos(ship: &Ship, board_size: u32) -> Vector2 {
 	let l = ship.size();
 
-	(js_rand(0, 10 - l.0), js_rand(0, 10 - l.1))	
+	(js_rand(0, board_size - l.0), js_rand(0, board_size - l.1))	
 }
 
-pub fn create_ships() -> Vec<Ship> {
+pub fn create_ships(board_size: u32) -> Vec<Ship> {
 	let mut ships_to_place = vec![
 		Ship::new("Carrier", 5),
 		Ship::new("Battleship", 4),
@@ -25,16 +22,17 @@ pub fn create_ships() -> Vec<Ship> {
 
 	let mut placed_ships = Vec::new();
 
+	// Place all ships
 	while let Some(mut ship) = ships_to_place.pop() {
-		ship.set_position(random_ship_pos(&ship));
-		if js_rand(0, 2) == 0 { ship = ship.rotate(); } 
+		ship.set_position(random_ship_pos(&ship, board_size));
+		if js_rand(0, 2) == 0 { ship = ship.rotate(); } // 50/50 chance to rotate 
 
+		// Keep redoing while the ship touches another
 		while ship_touches_others(&ship, &placed_ships) {
-			ship.set_position(random_ship_pos(&ship));
+			ship.set_position(random_ship_pos(&ship, board_size));
 		}
 
-		log!(ship.get_position().0, ship.get_position().1, ship.size().0); 
-
+		// Add to list when good 
 		placed_ships.push(ship);
 	}
 
@@ -58,8 +56,7 @@ pub fn position_hits_ship(ships: &Vec<Ship>, pos: (u32, u32)) -> bool {
 }
 
 pub fn all_ships_sunk(ships: &Vec<Ship>, hits: &Vec<Vector2>) -> bool {
-	log!(format!("{:?}", ships.iter().map(|x| x.positions())));
-
+	// Check all ship positions are inside hits
 	ships.iter().map(|x| x.positions())
 	.flatten().all(|e| hits.contains(&e)) 
 }

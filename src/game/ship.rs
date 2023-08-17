@@ -2,6 +2,7 @@ use gloo_console::log;
 
 pub type Vector2 = (u32, u32);
 
+/// Ship class to handle funcitonality for a battleships game
 #[derive(Clone, PartialEq, Debug)]
 pub struct Ship 
 {
@@ -22,12 +23,14 @@ impl Ship
 
 	pub fn get_position(&self) -> Vector2 { self.position }
 
+	/// Rotates ship; consumes self
 	pub fn rotate(&self) -> Ship {
 		let mut ship = self.clone();
 		ship.vertical = !ship.vertical;
 		ship
 	}
 	
+	/// Returns all ship positions
 	pub fn positions(&self) -> Vec<Vector2> {
 		match self.vertical {
 			false => (self.position.0..(self.position.0 + self.length))
@@ -45,6 +48,7 @@ impl Ship
 		.any(|item| other.positions().contains(item))
 	}	
 
+	/// Ship touches other ships, including diagonally
 	pub fn touches(&self, other: &Ship) -> bool {
 		let (mut x1, mut y1) = self.get_position();
 		if x1 > 0 { x1 -= 1; }
@@ -99,6 +103,7 @@ mod tests {
 		vec![(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)]);
   	}
 
+	  #[test]
 	fn ship_positions_rotated() {
 		let ship = Ship::new("destroyer", 5);
 		let ship = ship.rotate();
